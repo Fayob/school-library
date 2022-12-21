@@ -1,3 +1,5 @@
+require_relative 'nameable'
+
 class Person
   attr_reader :id
   attr_accessor :name, :age
@@ -15,9 +17,15 @@ class Person
     true
   end
 
+  def correct_name
+    @name
+  end
+
   private
 
   def is_of_age?
     @age >= 18
   end
 end
+
+
