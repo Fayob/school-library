@@ -36,7 +36,7 @@
 > School library was built with Ruby
 
 <details>
-  <summary>Client</summary>
+  <summary>Tech</summary>
   <ul>
     <li><a href="https://www.ruby-lang.org/">Ruby</a></li>
   </ul>
