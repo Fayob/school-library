@@ -87,9 +87,6 @@ class App
     print 'Title: '
     title = gets.chomp
 
-    print 'Author: '
-    author = gets.chomp
-
     book = Book.new(title, author)
     @books.push(book)
 
