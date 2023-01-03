@@ -3,21 +3,23 @@ require_relative './book'
 require_relative './teacher'
 require_relative './student'
 require_relative './rental'
+require 'json'
 
 class App
   def initialize
-    @books = []
-    @rentals = []
-    @people = []
+    @books = JSON.parse(File.read("book.json"), object_class: OpenStruct)
+    @rentals = JSON.parse(File.read("rentals.json"), object_class: OpenStruct)
+    @people = JSON.parse(File.read("people.json"), object_class: OpenStruct)
   end
 
   def list_books
     if @books.empty?
-      puts 'Oops! No book is available for now'
+      puts 'Oops! No book is available for now, you can create one'
       return
     end
     @books.map do |book|
-      puts "Title: #{book.title}, Author: #{book.author}"
+      books = Book.new(book[:title], book[:author])
+      puts "Title: #{books.title}, Author: #{books.author}"
     end
   end
 
@@ -27,7 +29,13 @@ class App
       return
     end
     @people.map do |person|
-      puts "[#{person.class}] Name: #{person.name}, ID: #{person.id}, Age: #{person.age}"
+      if person[:class] == "Student"
+        student = Student.new(person[:age], person[:classroom], person[:name], person[:parent_permission], person[:id])
+        puts "[#{student.class}] Name: #{student.name}, ID: #{student.id}, Age: #{student.age}"
+      else
+        teacher = Teacher.new(person[:age], person[:classroom], person[:name], person[:parent_permission], person[:id])
+        puts "[#{teacher.class}] Name: #{teacher.name}, ID: #{teacher.id}, Age: #{teacher.age}"
+      end
     end
   end
 
@@ -62,9 +70,14 @@ class App
 
     print 'Classroom: '
     classroom = gets.chomp
+    id = rand(100..1000)
+    student = Student.new(age, classroom, name, parent_permission, id)
+    @people.push({id: id, class: "Student", name: name, age: age, classroom: classroom, parent_permission: parent_permission})
 
-    student = Student.new(age, classroom, name, parent_permission)
-    @people.push(student)
+    File.open('people.json', 'w') do |file|
+      file.write(JSON.pretty_generate(@people))
+    end
+
     puts 'Student created successfully'
   end
 
@@ -77,18 +90,30 @@ class App
 
     print 'Specilization:'
     specialization = gets.chomp
+    id = rand(100..1000)
+    teacher = Teacher.new(age, specialization, name, true, id)
+    @people.push({id: id, class: "Teacher", name: name, age: age, specialization: specialization})
 
-    teacher = Teacher.new(age, specialization, name, true)
-    @people.push(teacher)
+    File.open('people.json', 'w') do |file|
+      file.write(JSON.pretty_generate(@people))
+    end
+
     puts 'Teacher created successfully'
   end
 
   def create_book
     print 'Title: '
-    title = gets.chomp
+    title = gets.chomp    
+
+    print 'Author: '
+    author = gets.chomp
 
     book = Book.new(title, author)
-    @books.push(book)
+    @books.push({title: title, author: author})
+
+    File.open('book.json', 'w') do |file|
+      file.write(JSON.pretty_generate(@books))
+    end
 
     puts 'Book created successfully'
   end
@@ -101,29 +126,34 @@ class App
     else
       puts 'Select a book from the following list by number:'
       @books.each_with_index do |book, index|
-        puts "#{index.to_i + 1}) Book Title: #{book.title}, Author: #{book.author}"
+        puts "#{index.to_i + 1}) Book Title: #{book[:title]}, Author: #{book[:author]}"
       end
       rental_book = gets.chomp.to_i - 1
       puts 'Select a person from the following list by number:'
       @people.each_with_index do |person, index|
-        puts "#{index.to_i + 1}) Name: #{person.name} Age: #{person.age} Id: #{person.id}"
+        puts "#{index.to_i + 1}) Name: #{person[:name]} Age: #{person[:age]} Id: #{person[:id]}"
       end
       rental_person = gets.chomp.to_i - 1
       puts 'Please enter the date:'
       date = gets.chomp
-      rental_detail = Rental.new(date, @books[rental_book], @people[rental_person])
-      @rentals.push(rental_detail)
+      
+      @rentals.push({date: date, book_title: @books[rental_book][:title], book_author: @books[rental_book][:author],  person_id: @people[rental_person][:id]})
+
+      File.open("rentals.json", "w") do |file|
+        file.write(JSON.pretty_generate(@rentals))
+      end
+
       puts 'Rental created successfully'
     end
   end
 
   def list_rentals
     puts 'Pick id of person'
-    @people.each { |i| puts "id: #{i.id}, Person: #{i.name}" }
+    @people.each { |i| puts "id: #{i[:id]}, Person: #{i[:name]}" }
     print 'ID of person: '
     person_id = gets.chomp
     @rentals.each do |i|
-      puts "Date: #{i.date}, Book: '#{i.book.title}' by #{i.book.author}" if i.person.id.to_i == person_id.to_i
+      return puts "Date: #{i[:date]}, Book: '#{i[:book_title]}' by #{i[:book_author].upcase}" if i[:person_id].to_i == person_id.to_i
     end
   end
 end
