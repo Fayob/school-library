@@ -7,9 +7,9 @@ require 'json'
 
 class App
   def initialize
-    @books = JSON.parse(File.read("book.json"), object_class: OpenStruct)
-    @rentals = JSON.parse(File.read("rentals.json"), object_class: OpenStruct)
-    @people = JSON.parse(File.read("people.json"), object_class: OpenStruct)
+    @books = JSON.parse(File.read('book.json'), object_class: OpenStruct)
+    @rentals = JSON.parse(File.read('rentals.json'), object_class: OpenStruct)
+    @people = JSON.parse(File.read('people.json'), object_class: OpenStruct)
   end
 
   def list_books
@@ -29,7 +29,7 @@ class App
       return
     end
     @people.map do |person|
-      if person[:class] == "Student"
+      if person[:class] == 'Student'
         student = Student.new(person[:age], person[:classroom], person[:name], person[:parent_permission], person[:id])
         puts "[#{student.class}] Name: #{student.name}, ID: #{student.id}, Age: #{student.age}"
       else
@@ -71,12 +71,11 @@ class App
     print 'Classroom: '
     classroom = gets.chomp
     id = rand(100..1000)
-    student = Student.new(age, classroom, name, parent_permission, id)
-    @people.push({id: id, class: "Student", name: name, age: age, classroom: classroom, parent_permission: parent_permission})
+    Student.new(age, classroom, name, parent_permission, id)
+    @people.push({ id: id, class: 'Student', name: name, age: age, classroom: classroom,
+                   parent_permission: parent_permission })
 
-    File.open('people.json', 'w') do |file|
-      file.write(JSON.pretty_generate(@people))
-    end
+    File.write('people.json', JSON.pretty_generate(@people))
 
     puts 'Student created successfully'
   end
@@ -91,29 +90,25 @@ class App
     print 'Specilization:'
     specialization = gets.chomp
     id = rand(100..1000)
-    teacher = Teacher.new(age, specialization, name, true, id)
-    @people.push({id: id, class: "Teacher", name: name, age: age, specialization: specialization})
+    Teacher.new(age, specialization, name, true, id)
+    @people.push({ id: id, class: 'Teacher', name: name, age: age, specialization: specialization })
 
-    File.open('people.json', 'w') do |file|
-      file.write(JSON.pretty_generate(@people))
-    end
+    File.write('people.json', JSON.pretty_generate(@people))
 
     puts 'Teacher created successfully'
   end
 
   def create_book
     print 'Title: '
-    title = gets.chomp    
+    title = gets.chomp
 
     print 'Author: '
     author = gets.chomp
 
-    book = Book.new(title, author)
-    @books.push({title: title, author: author})
+    Book.new(title, author)
+    @books.push({ title: title, author: author })
 
-    File.open('book.json', 'w') do |file|
-      file.write(JSON.pretty_generate(@books))
-    end
+    File.write('book.json', JSON.pretty_generate(@books))
 
     puts 'Book created successfully'
   end
@@ -136,12 +131,11 @@ class App
       rental_person = gets.chomp.to_i - 1
       puts 'Please enter the date:'
       date = gets.chomp
-      
-      @rentals.push({date: date, book_title: @books[rental_book][:title], book_author: @books[rental_book][:author],  person_id: @people[rental_person][:id]})
 
-      File.open("rentals.json", "w") do |file|
-        file.write(JSON.pretty_generate(@rentals))
-      end
+      @rentals.push({ date: date, book_title: @books[rental_book][:title], book_author: @books[rental_book][:author],
+                      person_id: @people[rental_person][:id] })
+
+      File.write('rentals.json', JSON.pretty_generate(@rentals))
 
       puts 'Rental created successfully'
     end
@@ -153,7 +147,9 @@ class App
     print 'ID of person: '
     person_id = gets.chomp
     @rentals.each do |i|
-      return puts "Date: #{i[:date]}, Book: '#{i[:book_title]}' by #{i[:book_author].upcase}" if i[:person_id].to_i == person_id.to_i
+      if i[:person_id].to_i == person_id.to_i
+        return puts "Date: #{i[:date]}, Book: '#{i[:book_title]}' by #{i[:book_author].upcase}"
+      end
     end
   end
 end
