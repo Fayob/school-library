@@ -2,6 +2,7 @@ require './app'
 
 class Main
   def self.menu
+    puts
     puts 'Welcome to School Library'
     puts
     puts 'Please choose an option by entering a number: '
