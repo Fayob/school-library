@@ -1,0 +1,1 @@
+Dir[File.dirname(File.absolute_path(__FILE__)) + '/**/*.spec.rb'].each {|file| require file }
