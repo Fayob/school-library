@@ -1,10 +1,10 @@
 require 'rspec'
-require_relative "../book"
+require_relative '../book'
 
-describe "Test for Book Class" do
-  it "test the instance variable in Book Class" do
-    newBook = Book.new("Ruby Tutorial", "John")
-    expect(newBook.title).to eql "Ruby Tutorial"
-    expect(newBook.author).to eql "John"
+describe 'Test for Book Class' do
+  it 'test the instance variable in Book Class' do
+    new_book = Book.new('Ruby Tutorial', 'John')
+    expect(new_book.title).to eql 'Ruby Tutorial'
+    expect(new_book.author).to eql 'John'
   end
 end
