@@ -97,9 +97,9 @@ class App
   end
 
   def create_rental
-    if @books.length.zero?
+    if @books.empty?
       puts 'No book record found'
-    elsif @people.length.zero?
+    elsif @people.empty?
       puts 'No person record found'
     else
       puts 'Select a book from the following list by number:'
