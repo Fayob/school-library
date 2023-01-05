@@ -1,6 +1,7 @@
 require 'rspec'
 require_relative '../trimmer_decorator'
 
+# add test for trimmer
 describe 'Test for Trimmer Decorator Class' do
   it 'test correct_name method in TrimmerDecorator Class' do
     trimmer_decorator1 = TrimmerDecorator.new('John')

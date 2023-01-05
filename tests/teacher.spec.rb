@@ -1,6 +1,7 @@
 require 'rspec'
 require_relative '../teacher'
 
+# add test for teacher
 describe 'test for Teacher Class' do
   it 'should test for can_use_services? method in Teacher Class' do
     new_teacher = Teacher.new(20, 'English', 'John', true)

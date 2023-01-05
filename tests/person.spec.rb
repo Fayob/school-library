@@ -1,6 +1,7 @@
 require 'rspec'
 require_relative '../person'
 
+# add test for person
 describe 'test for Person class' do
   it 'should test for all the methods in Person Class' do
     new_person = Person.new(20, 'Favour', true)

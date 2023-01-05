@@ -1,6 +1,7 @@
 require 'rspec'
 require_relative '../student'
 
+# add test for student
 describe 'test for Student Class' do
   it 'should test for classroom method in Student Class' do
     new_student = Student.new(20, 'elementary', 'John', true)
